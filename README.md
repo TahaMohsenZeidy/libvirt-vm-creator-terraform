@@ -17,13 +17,27 @@ sudo diff -r /var/lib/libvirt/images /var/lib/libvirt/images_new/ # Make sure ev
 sudo systemctl stop libvirtd
 sudo virsh pool-dumpxml default > pool.xml # Change to your current pool ()
 sed -i 's#<path>/var/lib/libvirt/images</path>#<path>/var/lib/libvirt/images_new</path>#' pool.xml
-virsh pool-define --file default-pool.xml
+sudo virsh pool-define --file default-pool.xml
 sudo mv /var/lib/libvirt/images /var/lib/libvirt/images_old
-sudo ln -s /var/lib/libvirt/images_new /var/lib/libvirt/images
+sudo ln -s /var/lib/libvirt/images_new/var/lib/libvirt/images
 sudo systemctl start libvirtd
 virsh pool-list # Check if all is in place
 ```
 Now we have a storage where to store all our qcow2 and cloud init files 
+Also to simplify the work you can add your users to suders (without password):
+```
+sudo visudo
+terraform_user    ALL=(ALL) NOPASSWD: ALL
+```
+Also to avoid any errors with libvirt add this line to /etc/libvirt/qemu.conf 
+```
+sudo nano /etc/libvirt/qemu.conf
+security_driver = "none"
+```
+Now we should be good.
+
+Note that in terraform.tfvars we specify some variables that you have to fill (vm name, wether to use a local cloud image ..)
+
 
 
 
