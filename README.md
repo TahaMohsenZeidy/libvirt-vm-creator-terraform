@@ -1,5 +1,6 @@
 # libvirt-vm-creator-terraform
 Terraform code that helps you create vms in simple and straight forward way using the libvirt provider
+![Terraform Libvirt Flow](terraform-libvirt-vm.png)
 ## Prereqs:
 * I am running on a Supermicro X9DRW server
 * Host OS: 20.04.4 LTS (Focal Fossa)
