@@ -10,7 +10,7 @@ sudo lvcreate -L 500G vgroot --name libvirtlv
 sudo mkfs.ext4 /dev/vgroot/libvirtlv
 sudo mkdir -p /var/lib/libvirt/images_new
 sudo mount /dev/vgroot/libvirtlv /var/lib/libvirt/images_new/
-echo '/dev/vgroot/libvirtlv /var/lib/libvirt/images_new ext4 defaulhistoryts 0 2' | sudo tee -a /etc/fstab
+echo '/dev/vgroot/libvirtlv /var/lib/libvirt/images_new ext4 defaults 0 2' | sudo tee -a /etc/fstab
 sudo virsh list --all | grep running | awk '{print $2}' | xargs -I{} virsh shutdown {} #Stop All running VMS
 sudo cp -av /var/lib/libvirt/images/* /var/lib/libvirt/images_new/
 sudo diff -r /var/lib/libvirt/images /var/lib/libvirt/images_new/ # Make sure everything was done correctly
