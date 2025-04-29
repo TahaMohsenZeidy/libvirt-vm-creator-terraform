@@ -38,6 +38,13 @@ security_driver = "none"
 Now we should be good.
 
 Note that in terraform.tfvars we specify some variables that you have to fill (vm name, wether to use a local cloud image ..)
+Fetching cloud images over terraform could take some time use wget with the image you like from 
+[Link Text](https://cloud-images.ubuntu.com/releases/) under /var/lib/libvirt/images_new/
+```
+cd /var/lib/libvirt/images_new/
+sudo wget https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img
+```
+
 
 
 
