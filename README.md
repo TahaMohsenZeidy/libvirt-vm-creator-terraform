@@ -39,12 +39,23 @@ Now we should be good.
 
 Note that in terraform.tfvars we specify some variables that you have to fill (vm name, wether to use a local cloud image ..)
 Fetching cloud images over terraform could take some time use wget with the image you like from 
-[Link Text](https://cloud-images.ubuntu.com/releases/) under /var/lib/libvirt/images_new/
+[Releases Link](https://cloud-images.ubuntu.com/releases/) under /var/lib/libvirt/images_new/
 ```
 cd /var/lib/libvirt/images_new/
 sudo wget https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img
 ```
 
+after that you open a terminal and clone this repo and change the values in terraform.tfvars to match your environment
+
+```
+git clone https://github.com/TahaMohsenZeidy/libvirt-vm-creator-terraform.git
+cd libvirt-vm-creator-terraform
+nano terraform.tfvars
+```
+
+run terraform init and terraform apply; after that you can ssh into the vm with the command you got from the output and do what you want :)
+
+We will use this code as a base to build a HA k8s cluster: check out the repo [here](https://github.com/TahaMohsenZeidy/k8s-ha-cluster-terraform).
 
 
 

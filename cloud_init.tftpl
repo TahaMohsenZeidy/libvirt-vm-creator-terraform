@@ -1,0 +1,39 @@
+#cloud-config
+hostname: ${hostname}
+fqdn: ${hostname}.local
+
+# Configure users
+users:
+  - name: ${username}
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: [adm, sudo]
+    shell: /bin/bash
+    plain_text_passwd: ${password}
+    lock_passwd: false
+    ssh_authorized_keys:
+      - ${ssh_key}
+
+# Disable password authentication over SSH but enable console password
+ssh_pwauth: false
+ssh:
+  allow_pw: false
+
+# Configure SSH to only allow key-based authentication
+write_files:
+  - path: /etc/ssh/sshd_config.d/99-disable-password-authentication.conf
+    content: |
+      # Disable password authentication for SSH
+      PasswordAuthentication no
+      ChallengeResponseAuthentication no
+      UsePAM yes
+    permissions: '0644'
+
+packages:
+  - qemu-guest-agent
+
+# Run commands on first boot
+runcmd:
+  - systemctl enable qemu-guest-agent
+  - systemctl start qemu-guest-agent
+  - systemctl restart sshd
+  - echo "VM configuration applied"

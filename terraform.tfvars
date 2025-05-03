@@ -1,0 +1,19 @@
+# Change this variables to match your environment
+use_public_ip = false
+use_local_image = true
+local_image_path = "/var/lib/libvirt/images_new/ubuntu-22.04-server-cloudimg-amd64.img"
+vm_name = "terraform-vm"
+vm_ram = 2
+vm_vcpus = 2
+vm_disk_size = 20
+remote_host_username = "remote_user"
+remote_host_ip = "X.X.X.X"
+vm_ssh_key = "" # put your public key here to access the vm later and comment the next line.
+public_ssh_key_file = "~/.ssh/ssh-key.pub"
+vm_username = "user"
+vm_password = "SecPass123"
+public_ip_bridge = "br102"
+private_ip_bridge = "virbr0"
+vm_public_ip = "X.X.X.X"
+vm_gateway = "X.X.X.X"
+vm_dns = "X.X.X.X"
