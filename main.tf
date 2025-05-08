@@ -74,6 +74,13 @@ resource "libvirt_domain" "vm_domain" {
     }
   }
 
+  # Add console configuration (sometimes it doesn't work without console)
+  console {
+    type        = "pty"
+    target_port = "0"
+    target_type = "serial"
+  }
+
   disk {
     volume_id = libvirt_volume.vm_disk.id
   }
