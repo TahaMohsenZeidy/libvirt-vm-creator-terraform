@@ -34,6 +34,7 @@ Also to avoid any errors with libvirt add this line to /etc/libvirt/qemu.conf
 ```
 sudo nano /etc/libvirt/qemu.conf
 security_driver = "none"
+sudo systemctl restart libvirtd
 ```
 Now we should be good.
 
