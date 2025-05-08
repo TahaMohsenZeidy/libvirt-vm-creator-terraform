@@ -17,7 +17,7 @@ sudo cp -av /var/lib/libvirt/images/* /var/lib/libvirt/images_new/
 sudo diff -r /var/lib/libvirt/images /var/lib/libvirt/images_new/ # Make sure everything was done correctly
 sudo systemctl stop libvirtd
 sudo virsh pool-dumpxml default > pool.xml # Change to your current pool ()
-sed -i 's#<path>/var/lib/libvirt/images</path>#<path>/var/lib/libvirt/images_new</path>#' pool.xml
+sed -i 's#<path>/var/lib/libvirt/images</path>#<path>/var/lib/libvirt/images_new</path>#' default-pool.xml
 sudo virsh pool-define --file default-pool.xml
 sudo mv /var/lib/libvirt/images /var/lib/libvirt/images_old
 sudo ln -s /var/lib/libvirt/images_new/var/lib/libvirt/images
