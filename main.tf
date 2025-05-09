@@ -21,13 +21,13 @@ locals {
 resource "libvirt_cloudinit_disk" "commoninit" {
   name      = "commoninit.iso"
   pool      = local.storage_pool_name
-  user_data = templatefile("${path.module}/cloud_init.tftpl", {
+  user_data = templatefile("${path.module}/templates/cloud_init.tftpl", {
     hostname = var.vm_name
     username = var.vm_username
     password = var.vm_password
     ssh_key  = var.vm_ssh_key != "" ? var.vm_ssh_key : file(pathexpand(var.public_ssh_key_file))
   })
-  network_config = var.use_public_ip ? templatefile("${path.module}/network_config.tftpl", {
+  network_config = var.use_public_ip ? templatefile("${path.module}/templates/network_config.tftpl", {
     ip      = var.vm_public_ip
     gateway = var.vm_gateway
     dns     = var.vm_dns
