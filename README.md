@@ -50,6 +50,7 @@ A production-ready Terraform module for automated virtual machine provisioning u
 - **Hardware**: Supermicro server or equivalent with virtualization support
 - **Virtualization**: KVM/QEMU with libvirt
 - **Network**: Configured bridge interfaces for VM networking
+- **Storage**: Adequate disk space for VM images and volumes
 
 ### Required Software
 ```bash
@@ -64,9 +65,58 @@ unzip terraform_1.5.0_linux_amd64.zip
 sudo mv terraform /usr/local/bin/
 ```
 
+### Storage Configuration
+
+For production deployments, proper storage setup is critical. If your default libvirt images directory has limited space, create a dedicated LVM volume:
+
+```bash
+# Create dedicated storage for VM images (adjust size as needed)
+sudo lvcreate -L 500G vgroot --name libvirtlv
+sudo mkfs.ext4 /dev/vgroot/libvirtlv
+sudo mkdir -p /var/lib/libvirt/images_new
+sudo mount /dev/vgroot/libvirtlv /var/lib/libvirt/images_new/
+
+# Make mount persistent
+echo '/dev/vgroot/libvirtlv /var/lib/libvirt/images_new ext4 defaults 0 2' | sudo tee -a /etc/fstab
+
+# Migrate existing images (if any)
+sudo virsh list --all | grep running | awk '{print $2}' | xargs -I{} virsh shutdown {}
+sudo cp -av /var/lib/libvirt/images/* /var/lib/libvirt/images_new/
+sudo diff -r /var/lib/libvirt/images /var/lib/libvirt/images_new/
+
+# Update libvirt storage pool
+sudo systemctl stop libvirtd
+sudo virsh pool-dumpxml default > default-pool.xml
+sed -i 's#<path>/var/lib/libvirt/images</path>#<path>/var/lib/libvirt/images_new</path>#' default-pool.xml
+sudo virsh pool-define --file default-pool.xml
+
+# Backup old location and create symlink
+sudo mv /var/lib/libvirt/images /var/lib/libvirt/images_old
+sudo ln -s /var/lib/libvirt/images_new /var/lib/libvirt/images
+sudo systemctl start libvirtd
+
+# Verify storage pool
+virsh pool-list
+```
+
+### Security Configuration
+
+For seamless automation, configure sudo access and libvirt security:
+
+```bash
+# Add terraform user to sudoers (for automation)
+sudo visudo
+# Add: terraform_user    ALL=(ALL) NOPASSWD: ALL
+
+# Configure libvirt security driver
+sudo nano /etc/libvirt/qemu.conf
+# Add: security_driver = "none"
+sudo systemctl restart libvirtd
+```
+
 ### Network Bridge Setup
 Ensure you have configured bridge interfaces:
-- **Private Bridge**: For internal/DHCP networking
+- **Private Bridge**: For internal/DHCP networking  
 - **Public Bridge**: For static public IP assignment (optional)
 
 ## Quick Start
@@ -201,4 +251,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Contact**: tahamohsen.zaidi@gmail.com
 
 ---
-
